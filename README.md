@@ -1,5 +1,7 @@
 # Nexus: A Solitaire Card Game
 
+*UNDER CONSTRUCTION*
+
 ## Overview and Objective
 
 Nexus: A Solitaire Card Game is a web-based solitaire card game designed to be played either via a web app or with physical decks.  
