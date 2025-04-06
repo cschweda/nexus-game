@@ -5,11 +5,10 @@
 Nexus: A Solitaire Card Game is a web-based solitaire card game designed to be played either via a web app or with physical decks.  
 In this game, you (the sole player) build sequences of cards to achieve a target number, lock them for points, and use special Fixit cards to manipulate locked sequences or correct misplays.
 
-Your deck is facedown (like traditional Solitaire) and you draw cards from that facedown deck. Meanwhile, the Fixit cards you start with (2 out of 10 total) are shown face up, so you know what fixes are available—but you do not know what the next card in your deck will be.
+Your play deck is entirely facedown (like traditional Solitaire). You draw the top card from this deck one by one during your turn. Meanwhile, the Fixit deck (10 cards total) is kept apart, and you start with 2 Fixit cards shown face up so that you know what fixes are available—but you do not know what the next card from your play deck will be.
 
-The game emphasizes strategy and suspense—stemming from the uncertainty of the next card in your facedown deck—while Fixit cards are visible so you know exactly what fixes you can apply.
-
-Once play starts, the deck remains as is; it cannot be reshuffled unless you use a special "SHUFFLE DECK" Fixit card.
+The game emphasizes strategy and suspense—stemming from the uncertainty of the next card in your facedown deck—while Fixit cards are visible so you know exactly what fixes you can apply.  
+Once play starts, the deck remains as is; it cannot be reshuffled during normal play unless you use a special "SHUFFLE DECK" Fixit card.
 
 ## Basic Game Rules
 
@@ -17,21 +16,21 @@ Once play starts, the deck remains as is; it cannot be reshuffled unless you use
   - The target number is randomly generated in the web version by selecting five cards face down from a shuffled deck and summing their values.
   - The minimum possible target is 5 (if all selected cards have a value of 1) and the maximum is 65 (if all selected cards are 13).
   - When playing with physical cards, these same limits apply.
-- At the start, the game shuffles a 52-card play deck (which is facedown) and a 10-card Fixit deck.
-- The player is dealt 5 cards from the play deck and 2 Fixit cards (face up) from the Fixit deck.
-- On a player's turn, they may choose one of two actions:
-  1. Play a normal card from their hand to continue or complete a sequence.
-     - The played card is removed from the hand, and the game state updates accordingly.
-  2. Play a Fixit card, which is drawn from the pre-dealt Fixit hand.
-     - Once played (after revealing its effect), the Fixit card's action (insert, reorder, remove, or retrieve) is applied immediately.
+- At the start, the game shuffles a 52-card play deck (which is entirely facedown) and a 10-card Fixit deck.
+- The play deck is held as a whole; you draw the top card one by one on each turn.
+- The Fixit deck is kept separate; 2 Fixit cards are revealed face up from it at the start.
+- On a player's turn, you may choose one of two actions:
+  1. Draw the next card from your facedown play deck and play it to continue or complete a sequence.
+     - The drawn card is used immediately to build or extend a sequence, and the game state updates accordingly.
+  2. Play a Fixit card (from the pre-dealt Fixit cards, which are face up).
+     - Once played (after revealing its effect), the Fixit card’s action (insert, reorder, remove, or retrieve) is applied immediately.
      - The use of a Fixit card immediately terminates the current action phase.
-- Note: Once play begins, the facedown deck remains in its current order. It cannot be shuffled during regular play; only a "SHUFFLE DECK" Fixit card may reshuffle the deck.
+- Note: Once play begins, the facedown deck remains in its current order. It cannot be reshuffled during regular play; only a "SHUFFLE DECK" Fixit card may reshuffle the deck.
 - Locked sequences earn points, with bonus points awarded for efficient use of Fixit cards.
 - Illegal moves, such as playing a card that does not fit into a sequence, are blocked and leave the game state unchanged.
 - Win/Loss Conditions:
-  - The player wins by successfully locking sequences that meet or exceed the target number while following all game rules.
-    - (Clarification needed: You may further specify that each locked sequence must contain at least three cards or follow another criterion.)
-  - The game is lost if the play deck and hand are exhausted without meeting the target number or if an illegal move is made that disrupts game flow.
+  - You win by successfully locking sequences that meet or exceed the target number while following all game rules.
+  - The game is lost if the play deck and any remaining drawn cards (if applicable) are exhausted without meeting the target number or if an illegal move disrupts game flow.
 - Persisting the game state via localStorage enables game sessions to be resumed later.
 
 ## Sample Playthrough
@@ -39,34 +38,33 @@ Once play starts, the deck remains as is; it cannot be reshuffled unless you use
 Turn 1:
 
 - The game begins by shuffling both the play deck and the Fixit deck.
-- You are dealt 5 regular cards and 2 Fixit cards (face up).
+- You start with a complete facedown play deck and 2 Fixit cards are revealed face up.
 - In the web version, the target number (e.g., 32) is generated by summing 5 random card values.
-- You review your hand and play a card to start a new ascending sequence.
-- Tip: When looking at your hand, aim to start with low or medium cards so you can gradually build towards the target number without overshooting it.
+- You turn the entire play deck upside down and draw the top card to start a new ascending sequence.
+- Tip: When drawing, aim to use a low or medium card to gradually build towards the target number without overshooting it.
 
 Turn 2:
 
-- The updated game state is rendered, showing your hand, any ongoing sequence, your score, and the remaining deck count.
-- You play another card that extends your sequence, ensuring it remains in ascending order.
-- The move is validated; if it fits, the sequence is updated and points may be added.
-- Tip: Check for cards that continue your sequence. Avoid playing high cards too early unless they perfectly fit the gap to approach the target.
+- The updated game state is rendered, showing the drawn card(s) forming your sequence, your score, and the remaining count of cards in your facedown play deck.
+- You draw the next card from the play deck. If the card fits the sequence, you play it and update the sequence; otherwise, it may still form the start of a new sequence.
+- Tip: Watch for cards that naturally extend your sequence. Avoid using high cards too early unless they perfectly bridge a gap to get closer to the target.
 
 Turn 3:
 
-- Now faced with a tricky situation, you opt to use a Fixit card.
-- You select a Fixit card, reveal its action (e.g., insert a missing card into your sequence), and apply the fix immediately.
+- Facing a challenging situation, you opt to use a Fixit card.
+- You select one of the available Fixit cards (face up), reveal its action (e.g., insert a missing card into your sequence), and apply the fix immediately.
 - This Fixit move ends your turn, and the card is marked as used.
-- Tip: Fixit cards are best saved for when your sequence needs critical adjustment, so use them strategically.
+- Tip: Save Fixit cards for critical adjustments in your sequence, as they are limited in number.
 
 Turn 4:
 
 - The game state refreshes with your updated sequence and score.
-- Depending on the rules, extra cards might be drawn to replenish your hand.
-- You prepare for your next move by evaluating the remaining cards.
+- You draw the next card from your facedown deck.
+- You evaluate your sequence and plan your next move based on the revealed outcome.
 - Hand Strategy Tips:
   - Look for cards that maintain the ascending order gradually nearing the target.
   - Preserve high cards for later turns when you need to close out your sequence without overshooting.
-  - The overall goal is to build a flexible sequence that can be fine-tuned to hit the target number exactly, so plan which cards best fit into your emerging sequence.
+  - The overall goal is to build a flexible sequence that can be fine-tuned to hit the target number exactly.
 
 ## Game Mechanics and Key Rules
 
@@ -126,12 +124,13 @@ This project is built with ES6 modules for maintainability and testing. The key 
   - `vite.config.js`: Configures development and build settings.
   - `/public`: Contains static assets like images and icons for gameplay.
 
-## Pseudocode Implementation (High-Level)
+## Pseudocode Implementation
 
-Below is a high-level description of the main events in the game loop. Note that this is not functional code, but instead a conceptual outline meant to illustrate the game flow.
+Below is a highly abstracted description of the main events in the game loop.
+
+Note that this is not functional code, but instead a conceptual outline meant to illustrate the game flow.
 
 ```plaintext
-[HIGH-LEVEL EXPANDED PSEUDOCODE]
 
 // Initialize game resources:
   - Create a 52-card play deck (with red backs) that is facedown.
@@ -178,8 +177,6 @@ WHILE gameIsRunning:
 
 // End loop when gameIsRunning is false.
 ```
-
-This description is intended to serve as a conceptual guide and should not be treated as production code.
 
 ## Gameplay Notes
 

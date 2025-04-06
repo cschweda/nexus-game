@@ -1,8 +1,9 @@
 Nexus: A Solitaire Card Game Prompt Document 
 
 Overview
-This is a web-based solitaire card game designed for a single player, with options for playing with two decks of physical cards. Build sequences of cards to reach a target number, lock sequences to secure points, and use Fixit cards to manipulate locked sequences or gain advantages.  
-Your play deck is facedown (like classic Solitaire), and you draw cards from that deck—while the starting Fixit cards (2 out of a total of 10) are drawn face up, allowing you to see what fixes are available. Note that once play starts, the deck remains as dealt and cannot be reshuffled except by using a special "SHUFFLE DECK" Fixit card.
+This is a web-based solitaire card game designed for a single player, with options for playing with physical decks. In this game, you build sequences of cards to reach a target number, lock sequences to secure points, and use Fixit cards to manipulate locked sequences or gain advantages.  
+
+Your play deck is entirely facedown (like classic Solitaire) and you draw cards one by one from that deck. The Fixit deck, containing 10 cards, is kept separate, and at the start, 2 Fixit cards are revealed face up so that you know what fixes are available. Note that you do not know what card will come up next from your play deck.
 
 Clarifications:
 - Target Number: Define if this is a static value or dynamically generated.
@@ -93,14 +94,14 @@ Pseudo Code Implementation
 ## Pseudocode Implementation
 
 // Initialize game resources:
-  - Create a 52-card play deck with card properties (suit, value, id) that is facedown.
-  - Create a 10-card Fixit deck with fixed actions (insert, reorder, remove, retrieve). These Fixit cards are drawn face up.
+  - Create a 52-card play deck with card properties that is entirely facedown.
+  - Create a 10-card Fixit deck with fixed actions; these Fixit cards are drawn face up.
   - Shuffle both decks using a Fisher-Yates algorithm.
-  - Deal 2 Fixit cards face up from the Fixit deck (pre-dealt Fixit hand).
-  - Deal 5 cards from the facedown play deck to the player.
-  - For web: generate targetNumber by summing 5 randomly selected card values.
-  - For physical cards: targetNumber is computed from cards drawn by the player.
-  - Initialize game state variables such as currentTurn, score, gameIsRunning, etc.
+  - **Do not deal a hand from the play deck**; instead, the player holds the entire deck and draws one card per turn.
+  - From the Fixit deck, reveal 2 cards face up (pre-dealt Fixit cards).
+  - For web: set targetNumber = randomly generated number when the app starts.
+  - For physical cards: targetNumber = sum(randomly drawn cards).
+  - Initialize game state variables (e.g., currentTurn, score, target number, etc.).
 
 // Main Game Loop:
 WHILE gameIsRunning:
@@ -182,14 +183,15 @@ and future scalability of the project.
   - The target number is randomly generated in the web version by selecting five cards face down from a shuffled deck and summing their values.
   - The minimum possible target is 5 (if all selected cards have a value of 1) and the maximum is 65 (if all selected cards are 13).
   - When playing with physical cards, these same limits apply.
-- At the start, the game shuffles a 52-card play deck and a 10-card Fixit deck.
-- The player is dealt 5 cards from the play deck and 2 Fixit cards (face down) from the Fixit deck.
+- At the start, the game shuffles a 52-card play deck (entirely facedown) and a 10-card Fixit deck.
+- The player holds the complete play deck and draws one card at a time.
+- The Fixit cards are kept apart, with 2 cards revealed face up at the start.
 - On a player's turn, they may choose one of two actions:
-  1. Play a normal card from their hand to continue or complete a sequence.
-     - The played card is removed from the hand, and the game state updates accordingly.
-  2. Play a Fixit card, which is drawn from the pre-dealt Fixit hand.
-     - Note: Fixit cards are drawn face up, allowing the player to see available fixes, while the player's own card deck remains facedown so the next card is unknown.
-     - Once played (after revealing its effect), the Fixit card’s action (insert, reorder, remove, or retrieve) is applied immediately.
+  1. Draw the top card from the facedown play deck to continue or complete a sequence.
+     - The drawn card is used immediately to build or extend a sequence, and the game state updates accordingly.
+  2. Play a Fixit card from the pre-dealt Fixit hand.
+     - Fixit cards are drawn face up, so the available actions are known.
+     - Once a Fixit card is played (after revealing its effect), its action (insert, reorder, remove, or retrieve) is applied immediately.
      - The use of a Fixit card immediately terminates the current action phase.
 - Locked sequences earn points, with bonus points awarded for efficient use of Fixit cards.
 - Illegal moves, such as playing a card that does not fit into a sequence, are blocked and leave the game state unchanged.
