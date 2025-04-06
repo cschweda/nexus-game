@@ -1,7 +1,6 @@
-Nexus Game Document
+Nexus Game Prompt Document 
 
-Overview and Improvements
-
+Overview
 This is a web-based solitaire card game with options for playing with two decks of physical cards. Build sequences of cards to reach a target number. Lock sequences to secure points and use Fixit cards to manipulate locked sequences or gain advantages. Play solo either via the web app or with physical decks of cards.
 
 Clarifications:
@@ -10,7 +9,7 @@ Clarifications:
 - Sequence Building: Specify valid sequences, handling duplicates and edge cases.
 - Turn Mechanics: Elaborate on how and when the action phase ends, especially after a Fixit move.
 
-Fixit Deck Details (Updated):
+Fixit Deck Details:
 The Fixit deck consists of 10 special cards. Each Fixit card is single-use and must be played face down.
 When you play a Fixit card, place it face down on the pile and then immediately turn it over to reveal its fix.
 Once a Fixit card is played and revealed, its action is applied and your action phase ends—no further cards (normal or Fixit) can be played that turn.
@@ -86,7 +85,9 @@ Automated tests should cover:
 - Persistence via localStorage.
 
 Pseudo Code Implementation
+
 ```JavaScript
+
 // Virtual play
 function shuffleDeck(deck) {
   // Fisher-Yates shuffle algorithm
@@ -173,36 +174,58 @@ while (gameIsRunning) {
     // ...prepare new turn logic...
   }
 }
-
-// [NEW SECTION] Modular File Structure and Main Entry Point
-//
-// This project follows a modular architecture using ES6 modules.
-// The primary entry point is not at the project root but inside the /src directory.
-// The index.html file (located at the project root) will load the main entry point as follows:
-//    <script type="module" src="./src/main.js"></script>
-//
-// Proposed File Structure:
-//   /home/cschw/webdev/nexus-game/
-//     ├── package.json
-//     ├── vite.config.js
-//     ├── index.html            // References main.js as the app entry point
-//     ├── /src
-//     │     ├── main.js         // Main entry point that initializes the game
-//     │     └── modules         // Contains separated logic modules:
-//     │           ├── deckManager.js      // Functions for shuffling and dealing cards
-//     │           ├── gameState.js        // Functions for state management (updates, turn handling)
-//     │           ├── uiRenderer.js       // Functions for rendering the UI using Tailwind CSS
-//     │           └── fixitLogic.js       // Functions for handling Fixit card moves and immediate turn termination
-//     └── /public
-//           └── (static assets)
-//
-// In main.js, import the necessary functions from the modules, for example:
-//    import { shuffleDeck, dealCards } from './modules/deckManager.js';
-//    import { initGameState } from './modules/gameState.js';
-//    import { renderGameState } from './modules/uiRenderer.js';
-//    import { applyFixitMove } from './modules/fixitLogic.js';
-// Then proceed to initialize the game state, render the UI, and handle user inputs.
-// 
-// This separation of concerns through modularity enhances maintainability, testing, 
-// and future scalability of the project.
 ```
+
+## Modular File Structure and Main Entry Point
+
+This project follows a modular architecture using ES6 modules.
+The primary entry point is not at the project root but inside the /src directory.
+The index.html file (located at the project root) will load the main entry point as follows:
+   <script type="module" src="./src/main.js"></script>
+
+Proposed File Structure:
+  /home/cschw/webdev/nexus-game/
+    ├── package.json
+    ├── vite.config.js
+    ├── index.html            // References main.js as the app entry point
+    ├── /src
+    │     ├── main.js         // Main entry point that initializes the game
+    │     └── modules         // Contains separated logic modules:
+    │           ├── deckManager.js      // Functions for shuffling and dealing cards
+    │           ├── gameState.js        // Functions for state management (updates, turn handling)
+    │           ├── uiRenderer.js       // Functions for rendering the UI using Tailwind CSS
+    │           └── fixitLogic.js       // Functions for handling Fixit card moves and immediate turn termination
+    └── /public
+          └── (static assets)
+
+In main.js, import the necessary functions from the modules, for example:
+   import { shuffleDeck, dealCards } from './modules/deckManager.js';
+   import { initGameState } from './modules/gameState.js';
+   import { renderGameState } from './modules/uiRenderer.js';
+   import { applyFixitMove } from './modules/fixitLogic.js';
+Then proceed to initialize the game state, render the UI, and handle user inputs.
+
+This separation of concerns through modularity enhances maintainability, testing, 
+and future scalability of the project.
+
+## Basic Game Rules
+
+- The objective is to build ascending sequences of cards that add up to a defined target number.
+  - The target number is randomly generated in the web version by selecting five cards face down from a shuffled deck and summing their values.
+  - The minimum possible target is 5 (if all selected cards have a value of 1) and the maximum is 65 (if all selected cards are 13).
+  - When playing with physical cards, these same limits apply.
+- At the start, the game shuffles a 52-card play deck and a 10-card Fixit deck.
+- The player is dealt 5 cards from the play deck and 2 Fixit cards (face down) from the Fixit deck.
+- On a player's turn, they may choose one of two actions:
+  1. Play a normal card from their hand to continue or complete a sequence.
+     - The played card is removed from the hand, and the game state updates accordingly.
+  2. Play a Fixit card, which is drawn from the pre-dealt Fixit hand.
+     - Once played (after revealing its effect), the Fixit card's action (insert, reorder, remove, or retrieve) is applied immediately.
+     - The use of a Fixit card immediately terminates the current action phase.
+- Locked sequences earn points, with bonus points awarded for efficient use of Fixit cards.
+- Illegal moves, such as playing a card that does not fit into a sequence, are blocked and leave the game state unchanged.
+- Win/Loss Conditions:
+  - The player wins by successfully locking sequences that meet or exceed the target number while following all game rules.
+    - (Clarification needed: You may further specify that each locked sequence must contain at least three cards or follow another criterion.)
+  - The game is lost if the play deck and hand are exhausted without meeting the target number or if an illegal move is made that disrupts game flow.
+- Persisting the game state via localStorage enables game sessions to be resumed later.
