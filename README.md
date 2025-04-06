@@ -47,42 +47,57 @@ This project is built with ES6 modules for maintainability and testing. The key 
   - `vite.config.js`: Configures development and build settings.
   - `/public`: Contains static assets like images and icons for gameplay.
 
-## Pseudocode Implementation
+## Pseudocode Implementation (High-Level)
 
-Below is an excerpt of the pseudocode that guides the game’s core loop and logic:
+Below is a high-level description of the main events in the game loop. Note that this is not functional code, but instead a conceptual outline meant to illustrate the game flow.
 
-```JavaScript
-// [PSEUDOCODE]
-// Initialize decks and game state:
-playDeck = createPlayDeck();          // Create 52 cards with red back.
-fixitDeck = createFixitDeck();        // Create 10 Fixit cards with blue back.
-playDeck = shuffleDeck(playDeck);
-fixitDeck = shuffleDeck(fixitDeck);
-fixitHand = dealCards(fixitDeck, 2);   // Pre-dealt Fixit cards.
-hand = dealCards(playDeck, 5);         // Initial player hand.
+```plaintext
+[HIGH-LEVEL EXPANDED PSEUDOCODE]
+
+// Initialize game resources:
+  - Create a 52-card play deck (with red backs).
+  - Create a 10-card Fixit deck (with blue backs).
+  - Shuffle both decks.
+  - From the Fixit deck, deal 2 cards face down (pre-dealt Fixit hand).
+  - From the play deck, deal 5 cards to the player.
+  - Initialize game state variables (e.g., currentTurn, score, target number, etc.).
 
 // Main Game Loop:
-while (gameIsRunning) {
-    renderGameState(hand);
-    let userInput = getUserInput();
-    if (userInput === "playCard") {
-        let playedCard = hand.shift();
-        updateGameState(playedCard);
-    } else if (userInput === "playFixit") {
-        if (fixitHand.length > 0) {
-            let fixitCard = fixitHand.shift();
-            applyFixitMove(fixitCard, targetSequence);
-            fixitCard.used = true;
-            continue; // End turn after a Fixit move.
-        }
-    }
-    if (isGameOver() || (playDeck is empty && hand is empty)) {
-        gameIsRunning = false;
-    } else {
-        // Prepare new turn (e.g., draw additional cards)
-    }
-}
+WHILE gameIsRunning:
+  - Render the current game state:
+      - Display player's hand, locked sequences, score, and remaining deck count.
+  - Prompt for player's input:
+      - userInput = getUserInput()  // e.g., "playCard" or "playFixit"
+  - Process the input:
+      IF userInput is "playCard":
+          - card = selectCardFromHand()        // Let the player choose a card
+          - IF isValidMove(card):
+                - updateGameStateWithCard(card)  // Integrate card into a sequence
+                - log the event (card played)
+          - ELSE:
+                - notify the player of an invalid move (no state change)
+      ELSE IF userInput is "playFixit":
+          - IF fixitHand is not empty:
+                - fixitCard = removeCardFromFixitHand()  // Pre-dealt Fixit card selected
+                - reveal fixitCard and determine its action
+                - applyFixitMove(fixitCard, targetSequence)  // Insertion, reorder, remove, retrieve
+                - mark fixitCard as used
+                - log the event and immediately terminate the current action phase
+                - (Skip any remaining actions in this turn)
+          - ELSE:
+                - notify the player that no Fixit cards are available
+  - Check for game end conditions:
+      - IF (play deck is empty AND player's hand is empty) OR win/loss criteria met:
+              - set gameIsRunning to false
+      - ELSE:
+              - Prepare for the next turn:
+                    - Optionally, draw additional cards if the hand is below a threshold
+                    - Increment currentTurn and reset temporary phase values
+
+// End loop when gameIsRunning is false.
 ```
+
+This description is intended to serve as a conceptual guide and should not be treated as production code.
 
 ## Gameplay Notes
 

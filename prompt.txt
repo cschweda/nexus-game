@@ -86,94 +86,52 @@ Automated tests should cover:
 
 Pseudo Code Implementation
 
-```JavaScript
+## Pseudocode Implementation (High-Level)
 
-// Virtual play
-function shuffleDeck(deck) {
-  // Fisher-Yates shuffle algorithm
-  for (let i = deck.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    let temp = deck[i];
-    deck[i] = deck[j];
-    deck[j] = temp;
-  }
-  return deck;
-}
+[HIGH-LEVEL EXPANDED PSEUDOCODE]
+```plaintext
+// Initialize game resources:
+  - Create a 52-card play deck (with red backs).
+  - Create a 10-card Fixit deck (with blue backs).
+  - Shuffle both decks.
+  - From the Fixit deck, deal 2 cards face down (pre-dealt Fixit hand).
+  - From the play deck, deal 5 cards to the player.
+  - Initialize game state variables (e.g., currentTurn, score, target number, etc.).
 
-function dealCards(deck, numCards) {
-  let hand = [];
-  for (let i = 0; i < numCards; i++) {
-    hand.push(deck.pop());
-  }
-  return hand;
-}
+// Main Game Loop:
+WHILE gameIsRunning:
+  - Render the current game state:
+      - Display player's hand, locked sequences, score, and remaining deck count.
+  - Prompt for player's input:
+      - userInput = getUserInput()  // e.g., "playCard" or "playFixit"
+  - Process the input:
+      IF userInput is "playCard":
+          - card = selectCardFromHand()        // Let the player choose a card
+          - IF isValidMove(card):
+                - updateGameStateWithCard(card)  // Integrate card into a sequence
+                - log the event (card played)
+          - ELSE:
+                - notify the player of an invalid move (no state change)
+      ELSE IF userInput is "playFixit":
+          - IF fixitHand is not empty:
+                - fixitCard = removeCardFromFixitHand()  // Pre-dealt Fixit card selected
+                - Reveal fixitCard and determine its action.
+                - applyFixitMove(fixitCard, targetSequence)  // Insertion, reorder, remove, or retrieve action.
+                - Mark fixitCard as used.
+                - Log the event and immediately terminate the current action phase.
+                - (Skip any remaining actions in this turn.)
+          - ELSE:
+                - Notify the player that no Fixit cards are available.
+  - Check for game end conditions:
+      - IF (play deck is empty AND player's hand is empty) OR win/loss criteria are met:
+              - Set gameIsRunning to false.
+      - ELSE:
+              - Prepare for the next turn:
+                    - Optionally, draw additional cards if the hand is below a threshold.
+                    - Increment currentTurn and reset temporary phase values.
 
-// Create Play Deck (52 cards) with red back
-let playDeck = [];
-for (let i = 0; i < 52; i++) {
-  playDeck.push({
-    suit: Math.floor(i / 13),
-    value: (i % 13) + 1,
-    back: "red" // red-backed card for play deck
-  });
-}
+// End loop when gameIsRunning is false.
 
-// Create Fixit Deck (10 Fixit cards) with blue back. Each card is single-use.
-let fixitDeck = [];
-for (let i = 0; i < 10; i++) {
-  fixitDeck.push({
-    type: "Fixit",
-    id: i,
-    back: "blue", // blue-backed card for fixit deck,
-    used: false  // indicates if the card has been used
-  });
-}
-
-// Shuffle both decks
-playDeck = shuffleDeck(playDeck);
-fixitDeck = shuffleDeck(fixitDeck);
-
-// Deal 2 Fixit cards from the shuffled fixitDeck as starting face down Fixit cards for the player.
-// These cards are set aside and will be used when the player opts to play a Fixit move.
-// After dealing 2, the fixitDeck now has 8 cards remaining.
-let fixitHand = dealCards(fixitDeck, 2);
-
-// Deal cards from the play deck into a single player hand
-let hand = dealCards(playDeck, 5);
-
-// Game loop (Updated portion)
-while (gameIsRunning) {
-  // Render game state for the single player
-  renderGameState(hand);
-  
-  // Handle user input (e.g., playing a card or playing a Fixit card)
-  let userInput = getUserInput();
-  if (userInput === "playCard") {
-    // Normal play: play a card from the player's hand and continue the action phase
-    let playedCard = hand.shift();
-    updateGameState(playedCard);
-  } else if (userInput === "playFixit") {
-    // When the player opts to play a Fixit card:
-    // 1. Take a Fixit card from the fixitHand (which was pre-dealt face down).
-    if (fixitHand.length > 0) {
-      let fixitCard = fixitHand.shift(); // Remove the card from the fixitHand.
-      // Place it face down then immediately turn it over (simulated here by applying its move).
-      applyFixitMove(fixitCard, targetSequence); // Apply the revealed fix.
-      fixitCard.used = true;
-      
-      // End the action phase immediately after the Fixit move.
-      continue; // Skip any further actions; turn ends.
-    }
-  }
-  
-  // High-level end game checks and new turn preparation:
-  if (isGameOver() || (playDeck.length === 0 && hand.length === 0)) {
-    gameIsRunning = false;
-  } else {
-    // Prepare a new turn (e.g., draw additional cards if hand is below threshold)
-    // ...prepare new turn logic...
-  }
-}
 ```
 
 ## Modular File Structure and Main Entry Point
