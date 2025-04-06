@@ -35,6 +35,8 @@ Once play starts, the deck remains as is; it cannot be reshuffled during normal 
   - The game is lost if the play deck and any remaining drawn cards (if applicable) are exhausted without meeting the target number or if an illegal move disrupts game flow.
 - Persisting the game state via localStorage enables game sessions to be resumed later.
 
+[AI Prompt (in progress)](prompt.txt)
+
 ## Sample Playthrough
 
 Turn 1:
@@ -126,7 +128,7 @@ This project is built with ES6 modules for maintainability and testing. The key 
   - `vite.config.js`: Configures development and build settings.
   - `/public`: Contains static assets like images and icons for gameplay.
 
-## Pseudocode Implementation
+## Pseudocode Game Loop Implementation
 
 Below is a highly abstracted description of the main events in the game loop.
 
