@@ -2,15 +2,14 @@
 
 ## Overview and Objective
 
-Nexus is a web-based solitaire card game designed to be played either via a web app or with physical decks.
-
+Nexus: A Solitaire Card Game is a web-based solitaire card game designed to be played either via a web app or with physical decks.  
 In this game, you (the sole player) build sequences of cards to achieve a target number, lock them for points, and use special Fixit cards to manipulate locked sequences or correct misplays.
 
 Your deck is facedown (like traditional Solitaire) and you draw cards from that facedown deck. Meanwhile, the Fixit cards you start with (2 out of 10 total) are shown face up, so you know what fixes are available—but you do not know what the next card in your deck will be.
 
-Once play starts, the deck remains as is; it cannot be reshuffled unless you use a special "SHUFFLE DECK" Fixit card.
+The game emphasizes strategy and suspense—stemming from the uncertainty of the next card in your facedown deck—while Fixit cards are visible so you know exactly what fixes you can apply.
 
-The game emphasizes strategy, suspense (via face-down Fixit cards), and careful state management.
+Once play starts, the deck remains as is; it cannot be reshuffled unless you use a special "SHUFFLE DECK" Fixit card.
 
 ## Basic Game Rules
 
