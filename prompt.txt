@@ -1,7 +1,8 @@
-Nexus Game Prompt Document 
+Nexus: A Solitaire Card Game Prompt Document 
 
 Overview
-This is a web-based solitaire card game with options for playing with two decks of physical cards. Build sequences of cards to reach a target number. Lock sequences to secure points and use Fixit cards to manipulate locked sequences or gain advantages. Play solo either via the web app or with physical decks of cards.
+This is a web-based solitaire card game designed for a single player, with options for playing with two decks of physical cards. Build sequences of cards to reach a target number, lock sequences to secure points, and use Fixit cards to manipulate locked sequences or gain advantages.  
+Your play deck is facedown (like classic Solitaire), and you draw cards from that deck—while the starting Fixit cards (2 out of a total of 10) are drawn face up, allowing you to see what fixes are available. Note that once play starts, the deck remains as dealt and cannot be reshuffled except by using a special "SHUFFLE DECK" Fixit card.
 
 Clarifications:
 - Target Number: Define if this is a static value or dynamically generated.
@@ -92,11 +93,11 @@ Pseudo Code Implementation
 ## Pseudocode Implementation
 
 // Initialize game resources:
-  - Create a 52-card play deck with card properties (suit, value, id).
-  - Create a 10-card Fixit deck with fixed actions (insert, reorder, remove, retrieve).
+  - Create a 52-card play deck with card properties (suit, value, id) that is facedown.
+  - Create a 10-card Fixit deck with fixed actions (insert, reorder, remove, retrieve). These Fixit cards are drawn face up.
   - Shuffle both decks using a Fisher-Yates algorithm.
-  - Deal 2 Fixit cards face down to create the pre-dealt Fixit hand.
-  - Deal 5 cards from the play deck to the player.
+  - Deal 2 Fixit cards face up from the Fixit deck (pre-dealt Fixit hand).
+  - Deal 5 cards from the facedown play deck to the player.
   - For web: generate targetNumber by summing 5 randomly selected card values.
   - For physical cards: targetNumber is computed from cards drawn by the player.
   - Initialize game state variables such as currentTurn, score, gameIsRunning, etc.
@@ -205,4 +206,4 @@ Scoring and Endgame Conditions:
       * Subtracting penalty points for any remaining cards in the player's hand (if applicable).
 - In a series of games (for example, 10 games), the goal is to achieve the lowest cumulative score.
 - For the web version, a real-time dashboard should display metrics such as: cards left in the play deck, current score (with bonus/penalty details), turn count, and other relevant statistics.
-- Physical players will need to track these metrics manually.
+- Physical play requires tracking these metrics manually.
