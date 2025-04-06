@@ -5,6 +5,9 @@ This is a web-based solitaire card game with options for playing with two decks 
 
 Clarifications:
 - Target Number: Define if this is a static value or dynamically generated.
+  - Web Version: The target number is randomly generated when the app starts.
+  - Physical Cards: The target number is determined by drawing random cards.
+  Note: The target number is the sum of five cards, with a minimum of 5 and a maximum of 65.
 - Scoring Rules: Clarify bonus points mechanism and point penalties for unused Fixit cards.
 - Sequence Building: Specify valid sequences, handling duplicates and edge cases.
 - Turn Mechanics: Elaborate on how and when the action phase ends, especially after a Fixit move.
@@ -86,53 +89,59 @@ Automated tests should cover:
 
 Pseudo Code Implementation
 
-## Pseudocode Implementation (High-Level)
+## Pseudocode Implementation
 
-[HIGH-LEVEL EXPANDED PSEUDOCODE]
-```plaintext
 // Initialize game resources:
-  - Create a 52-card play deck (with red backs).
-  - Create a 10-card Fixit deck (with blue backs).
-  - Shuffle both decks.
-  - From the Fixit deck, deal 2 cards face down (pre-dealt Fixit hand).
-  - From the play deck, deal 5 cards to the player.
-  - Initialize game state variables (e.g., currentTurn, score, target number, etc.).
+  - Create a 52-card play deck with card properties (suit, value, id).
+  - Create a 10-card Fixit deck with fixed actions (insert, reorder, remove, retrieve).
+  - Shuffle both decks using a Fisher-Yates algorithm.
+  - Deal 2 Fixit cards face down to create the pre-dealt Fixit hand.
+  - Deal 5 cards from the play deck to the player.
+  - For web: generate targetNumber by summing 5 randomly selected card values.
+  - For physical cards: targetNumber is computed from cards drawn by the player.
+  - Initialize game state variables such as currentTurn, score, gameIsRunning, etc.
 
 // Main Game Loop:
 WHILE gameIsRunning:
-  - Render the current game state:
-      - Display player's hand, locked sequences, score, and remaining deck count.
-  - Prompt for player's input:
-      - userInput = getUserInput()  // e.g., "playCard" or "playFixit"
-  - Process the input:
-      IF userInput is "playCard":
-          - card = selectCardFromHand()        // Let the player choose a card
-          - IF isValidMove(card):
-                - updateGameStateWithCard(card)  // Integrate card into a sequence
-                - log the event (card played)
-          - ELSE:
-                - notify the player of an invalid move (no state change)
-      ELSE IF userInput is "playFixit":
-          - IF fixitHand is not empty:
-                - fixitCard = removeCardFromFixitHand()  // Pre-dealt Fixit card selected
-                - Reveal fixitCard and determine its action.
-                - applyFixitMove(fixitCard, targetSequence)  // Insertion, reorder, remove, or retrieve action.
-                - Mark fixitCard as used.
-                - Log the event and immediately terminate the current action phase.
-                - (Skip any remaining actions in this turn.)
-          - ELSE:
-                - Notify the player that no Fixit cards are available.
-  - Check for game end conditions:
-      - IF (play deck is empty AND player's hand is empty) OR win/loss criteria are met:
-              - Set gameIsRunning to false.
-      - ELSE:
-              - Prepare for the next turn:
-                    - Optionally, draw additional cards if the hand is below a threshold.
-                    - Increment currentTurn and reset temporary phase values.
-
-// End loop when gameIsRunning is false.
-
-```
+  // UI Rendering:
+    - Render player's hand.
+    - Render locked sequences.
+    - Display current score and remaining cards in the play deck.
+  
+  // Input Processing:
+    - Wait for player's input (e.g., mouse click or key press).
+    - IF input is "playCard":
+         - Prompt player to select a card from their hand.
+         - Validate move: check if the selected card can extend or complete a valid sequence.
+         - IF valid:
+              - Update game state with the played card.
+              - Log the event.
+              - Provide positive feedback to the player.
+         - ELSE:
+              - Notify the player of the invalid move (without updating state).
+    - ELSE IF input is "playFixit":
+         - Check if pre-dealt Fixit hand is not empty.
+         - IF available:
+              - Remove one Fixit card from the Fixit hand.
+              - Reveal the card’s action.
+              - Apply the Fixit action (insertion, reorder, remove, or retrieval) on the target sequence.
+              - Mark the Fixit card as used.
+              - Log the event.
+              - Terminate the current action phase immediately.
+         - ELSE:
+              - Notify the player that no Fixit cards are available.
+  
+  // State Update & Turn Transition:
+    - Check win conditions: verify if locked sequences meet or exceed targetNumber.
+    - Check loss conditions: if play deck and player's hand are empty without meeting the target.
+    - IF neither condition is met:
+         - Optionally deal additional cards if player's hand is below threshold.
+         - Increment currentTurn.
+         - Reset temporary turn values.
+  
+// End of Game Loop:
+  - Finalize game state (final score, statistics).
+  - Prompt player to restart or exit.
 
 ## Modular File Structure and Main Entry Point
 
@@ -187,3 +196,13 @@ and future scalability of the project.
     - (Clarification needed: You may further specify that each locked sequence must contain at least three cards or follow another criterion.)
   - The game is lost if the play deck and hand are exhausted without meeting the target number or if an illegal move is made that disrupts game flow.
 - Persisting the game state via localStorage enables game sessions to be resumed later.
+
+Scoring and Endgame Conditions:
+- The game ends when the play deck is exhausted and the player's hand is empty, or when no legal moves are available.
+- At game end, the score is computed by:
+      * Summing points from locked sequences that meet or exceed the target number.
+      * Adding bonus points for effective use of Fixit cards.
+      * Subtracting penalty points for any remaining cards in the player's hand (if applicable).
+- In a series of games (for example, 10 games), the goal is to achieve the lowest cumulative score.
+- For the web version, a real-time dashboard should display metrics such as: cards left in the play deck, current score (with bonus/penalty details), turn count, and other relevant statistics.
+- Physical players will need to track these metrics manually.
