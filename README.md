@@ -2,9 +2,12 @@
 
 ## Overview and Objective
 
-Nexus: A Solitaire Card Game is a web-based solitaire card game designed to be played either via a web app or with physical decks.  
-In this game, you (the sole player) build sequences of cards to achieve a target number, lock them for points, and use special Fixit cards to manipulate locked sequences or correct misplays.  
-Your deck is facedown (like traditional Solitaire) and you draw cards from that facedown deck. Meanwhile, the Fixit cards you start with (2 out of 10 total) are shown face up, so you know what fixes are available—but you do not know what the next card in your deck will be.  
+Nexus is a web-based solitaire card game designed to be played either via a web app or with physical decks.
+
+In this game, you (the sole player) build sequences of cards to achieve a target number, lock them for points, and use special Fixit cards to manipulate locked sequences or correct misplays.
+
+Your deck is facedown (like traditional Solitaire) and you draw cards from that facedown deck. Meanwhile, the Fixit cards you start with (2 out of 10 total) are shown face up, so you know what fixes are available—but you do not know what the next card in your deck will be.
+
 Once play starts, the deck remains as is; it cannot be reshuffled unless you use a special "SHUFFLE DECK" Fixit card.
 
 The game emphasizes strategy, suspense (via face-down Fixit cards), and careful state management.
@@ -75,10 +78,13 @@ Turn 4:
   Lock sequences to secure points. Locked sequences may provide bonus points.
 
 - **Fixit Cards:**  
-  A deck of 10 special Fixit cards is included. These cards are single-use and played face down. When a Fixit card is played:
-  - Place the card face down then reveal it immediately.
-  - Its action (e.g., inserting, reordering, removing, or retrieving a card) is applied.
-  - The turn ends immediately after the Fixit move.
+  A deck of 10 special Fixit cards is included. These cards are drawn face up so that you can see what fixes are available. However, your play deck is always facedown—ensuring that you do not know the next card until it is drawn.
+
+  - When a Fixit card is played:
+    - Place the card face down then reveal it immediately.
+    - Its action (e.g., inserting, reordering, removing, or retrieving a card) is applied.
+    - The turn ends immediately after the Fixit move.
+
 - **Scoring and Turn Mechanics:**  
   Define the target number (static or dynamic) and how bonus points or penalties (e.g., for unused Fixit cards) are applied. Further clarify when and how the action phase ends.
 

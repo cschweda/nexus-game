@@ -188,7 +188,8 @@ and future scalability of the project.
   1. Play a normal card from their hand to continue or complete a sequence.
      - The played card is removed from the hand, and the game state updates accordingly.
   2. Play a Fixit card, which is drawn from the pre-dealt Fixit hand.
-     - Once played (after revealing its effect), the Fixit card's action (insert, reorder, remove, or retrieve) is applied immediately.
+     - Note: Fixit cards are drawn face up, allowing the player to see available fixes, while the player's own card deck remains facedown so the next card is unknown.
+     - Once played (after revealing its effect), the Fixit card’s action (insert, reorder, remove, or retrieve) is applied immediately.
      - The use of a Fixit card immediately terminates the current action phase.
 - Locked sequences earn points, with bonus points awarded for efficient use of Fixit cards.
 - Illegal moves, such as playing a card that does not fit into a sequence, are blocked and leave the game state unchanged.
@@ -197,6 +198,19 @@ and future scalability of the project.
     - (Clarification needed: You may further specify that each locked sequence must contain at least three cards or follow another criterion.)
   - The game is lost if the play deck and hand are exhausted without meeting the target number or if an illegal move is made that disrupts game flow.
 - Persisting the game state via localStorage enables game sessions to be resumed later.
+
+## Game Mechanics and Key Rules
+
+- **Sequence Building:**  
+  Create sequences by arranging cards in ascending order. Clarify how duplicates or near-complete sequences are handled.
+  
+- **Locking Mechanism:**  
+  Lock sequences to secure points, with bonus points for effective strategy.
+
+- **Fixit Cards:**  
+  A total of 10 Fixit cards are available. These cards are drawn face up, so the player knows what fixes are available, whereas the player's own play deck is kept facedown to preserve uncertainty about the next card.
+  - When played, a Fixit card is placed face down, then immediately revealed.
+  - Its action (e.g., inserting, reordering, removing, or retrieving a card) is applied, and the turn ends immediately.
 
 Scoring and Endgame Conditions:
 - The game ends when the play deck is exhausted and the player's hand is empty, or when no legal moves are available.
