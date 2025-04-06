@@ -1,0 +1,208 @@
+Nexus Game Document
+
+Overview and Improvements
+
+This is a web-based solitaire card game with options for playing with two decks of physical cards. Build sequences of cards to reach a target number. Lock sequences to secure points and use Fixit cards to manipulate locked sequences or gain advantages. Play solo either via the web app or with physical decks of cards.
+
+Clarifications:
+- Target Number: Define if this is a static value or dynamically generated.
+- Scoring Rules: Clarify bonus points mechanism and point penalties for unused Fixit cards.
+- Sequence Building: Specify valid sequences, handling duplicates and edge cases.
+- Turn Mechanics: Elaborate on how and when the action phase ends, especially after a Fixit move.
+
+Fixit Deck Details (Updated):
+The Fixit deck consists of 10 special cards. Each Fixit card is single-use and must be played face down.
+When you play a Fixit card, place it face down on the pile and then immediately turn it over to reveal its fix.
+Once a Fixit card is played and revealed, its action is applied and your action phase ends—no further cards (normal or Fixit) can be played that turn.
+Fixes may include:
+1. Inserting a card into a nearly complete sequence.
+2. Reordering cards if a sequence is broken.
+3. Removing an unwanted card from a locked sequence.
+4. Retrieving a misplayed card from the discard pile.
+Pros of playing a Fixit card face down:
+- Maintains suspense and strategic uncertainty, forcing you to commit before knowing the exact fix.
+- Increases the challenge and potential bonus points if the revealed fix is particularly beneficial.
+Cons of playing a Fixit card face down:
+- The fix might turn out less advantageous than hoped, and you lose the chance for a controlled, known repair.
+- May lead to accidental penalties if the fix does not match the needed repair situation.
+Additionally, unused Fixit cards at the end of the game may incur a point penalty.
+
+Game Mechanics
+Build sequences of cards in ascending order
+Lock sequences to secure points
+Use Fixit cards to manipulate locked sequences or gain advantages
+Earn bonus points for locking sequences and using Fixit cards effectively
+
+Detailed Game State and Module Responsibilities
+
+Game State Details:
+- playDeck: Array holding the remaining cards in the play deck.
+- fixitDeck: Array holding the special Fixit cards (10 cards) that can be used to repair incomplete or misplayed sequences.
+- hand: Array holding the player's cards.
+- lockedSequences: Array of arrays representing the sequences that have been locked.
+- fixitCards: Array to track Fixit cards that have been used in a turn (since each can only be used once).
+- score: Object tracking points (e.g., { player: number, bonus: number }).
+- gameIsRunning: Boolean indicating whether the game loop is active.
+- currentTurn: Tracks the current turn number.
+- targetNumber: Defines the target value for sequences.
+- actionPhaseState: Tracks the current phase of the player's turn.
+
+Module Responsibilities:
+- Deck Management: Shuffle and deal cards.
+- Game State Management: Update state on card play, lock sequences.
+- UI Rendering: Use Tailwind CSS for responsive design.
+- Fixit Card Logic: Handle the one-time use and immediate turn ending.
+- Input Processing and Validation: Handle illegal moves gracefully.
+
+Persistence Strategy:
+- Critical game data (current game state, high scores) can be saved in localStorage.
+  Example: localStorage.setItem('nexusGameState', JSON.stringify(gameState));
+  And retrieved via JSON.parse(localStorage.getItem('nexusGameState')).
+- This ensures that the game can be resumed between sessions.
+
+Virtual Play
+Use a web server, client-side JavaScript application, and database (optional)
+Shuffle and deal cards using a Fisher-Yates shuffle algorithm
+
+Physical Play
+Use a physical deck of cards, playing surface, and players
+Shuffle and deal cards using a manual shuffling method
+
+UI Considerations (using Tailwind CSS):
+- Tailwind CSS can be integrated in the project's index.html to build a modern UI.
+- Use Tailwind's utility classes for responsive elements including card displays,
+  game boards, and interactive buttons.
+
+Modular Architecture:
+This project should be built using ES6 modules wherever possible. Each module (for example, modules for deck management, game state management, UI rendering, and Fixit card logic) should reside in its own file, ideally within a dedicated scripts directory (e.g., /home/cschw/webdev/nexus-game/src/scripts). The index.html should only serve as the shell that loads these modules using <script type="module">. Similarly, separate CSS files should handle styling and be imported as needed. This modular approach helps manage complexity, improve maintainability, and facilitate testing.
+
+Testing and Validation
+
+Automated tests should cover:
+- Shuffling randomness.
+- Proper card dealing.
+- State updates on card plays.
+- Correct termination of turn after a Fixit card.
+- Persistence via localStorage.
+
+Pseudo Code Implementation
+```JavaScript
+// Virtual play
+function shuffleDeck(deck) {
+  // Fisher-Yates shuffle algorithm
+  for (let i = deck.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    let temp = deck[i];
+    deck[i] = deck[j];
+    deck[j] = temp;
+  }
+  return deck;
+}
+
+function dealCards(deck, numCards) {
+  let hand = [];
+  for (let i = 0; i < numCards; i++) {
+    hand.push(deck.pop());
+  }
+  return hand;
+}
+
+// Create Play Deck (52 cards) with red back
+let playDeck = [];
+for (let i = 0; i < 52; i++) {
+  playDeck.push({
+    suit: Math.floor(i / 13),
+    value: (i % 13) + 1,
+    back: "red" // red-backed card for play deck
+  });
+}
+
+// Create Fixit Deck (10 Fixit cards) with blue back. Each card is single-use.
+let fixitDeck = [];
+for (let i = 0; i < 10; i++) {
+  fixitDeck.push({
+    type: "Fixit",
+    id: i,
+    back: "blue", // blue-backed card for fixit deck,
+    used: false  // indicates if the card has been used
+  });
+}
+
+// Shuffle both decks
+playDeck = shuffleDeck(playDeck);
+fixitDeck = shuffleDeck(fixitDeck);
+
+// Deal 2 Fixit cards from the shuffled fixitDeck as starting face down Fixit cards for the player.
+// These cards are set aside and will be used when the player opts to play a Fixit move.
+// After dealing 2, the fixitDeck now has 8 cards remaining.
+let fixitHand = dealCards(fixitDeck, 2);
+
+// Deal cards from the play deck into a single player hand
+let hand = dealCards(playDeck, 5);
+
+// Game loop (Updated portion)
+while (gameIsRunning) {
+  // Render game state for the single player
+  renderGameState(hand);
+  
+  // Handle user input (e.g., playing a card or playing a Fixit card)
+  let userInput = getUserInput();
+  if (userInput === "playCard") {
+    // Normal play: play a card from the player's hand and continue the action phase
+    let playedCard = hand.shift();
+    updateGameState(playedCard);
+  } else if (userInput === "playFixit") {
+    // When the player opts to play a Fixit card:
+    // 1. Take a Fixit card from the fixitHand (which was pre-dealt face down).
+    if (fixitHand.length > 0) {
+      let fixitCard = fixitHand.shift(); // Remove the card from the fixitHand.
+      // Place it face down then immediately turn it over (simulated here by applying its move).
+      applyFixitMove(fixitCard, targetSequence); // Apply the revealed fix.
+      fixitCard.used = true;
+      
+      // End the action phase immediately after the Fixit move.
+      continue; // Skip any further actions; turn ends.
+    }
+  }
+  
+  // High-level end game checks and new turn preparation:
+  if (isGameOver() || (playDeck.length === 0 && hand.length === 0)) {
+    gameIsRunning = false;
+  } else {
+    // Prepare a new turn (e.g., draw additional cards if hand is below threshold)
+    // ...prepare new turn logic...
+  }
+}
+
+// [NEW SECTION] Modular File Structure and Main Entry Point
+//
+// This project follows a modular architecture using ES6 modules.
+// The primary entry point is not at the project root but inside the /src directory.
+// The index.html file (located at the project root) will load the main entry point as follows:
+//    <script type="module" src="./src/main.js"></script>
+//
+// Proposed File Structure:
+//   /home/cschw/webdev/nexus-game/
+//     ├── package.json
+//     ├── vite.config.js
+//     ├── index.html            // References main.js as the app entry point
+//     ├── /src
+//     │     ├── main.js         // Main entry point that initializes the game
+//     │     └── modules         // Contains separated logic modules:
+//     │           ├── deckManager.js      // Functions for shuffling and dealing cards
+//     │           ├── gameState.js        // Functions for state management (updates, turn handling)
+//     │           ├── uiRenderer.js       // Functions for rendering the UI using Tailwind CSS
+//     │           └── fixitLogic.js       // Functions for handling Fixit card moves and immediate turn termination
+//     └── /public
+//           └── (static assets)
+//
+// In main.js, import the necessary functions from the modules, for example:
+//    import { shuffleDeck, dealCards } from './modules/deckManager.js';
+//    import { initGameState } from './modules/gameState.js';
+//    import { renderGameState } from './modules/uiRenderer.js';
+//    import { applyFixitMove } from './modules/fixitLogic.js';
+// Then proceed to initialize the game state, render the UI, and handle user inputs.
+// 
+// This separation of concerns through modularity enhances maintainability, testing, 
+// and future scalability of the project.
+```

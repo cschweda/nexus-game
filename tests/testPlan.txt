@@ -1,0 +1,73 @@
+Test Plan for Nexus Game
+
+Test 1: Deck Shuffling
+Description: Verify that shuffleDeck returns a deck with the same cards in a different (randomized) order.
+Reason: To ensure the Fisher-Yates algorithm is implemented correctly and doesn't lose or duplicate cards.
+How to Check: 
+   - Count the cards in the original and shuffled decks.
+   - Sort both decks (by a unique property like suit and value) and compare equality.
+   - The test passes if lengths match and sorted decks are equal, but the order of unsorted decks differs.
+   - Additionally, test for randomness by running shuffleDeck repeatedly (e.g., 1000 iterations) and tracking the frequency of positions for one or more specific cards. Compare these frequencies with the expected uniform distribution (using statistical methods such as a chi-square test). If the results indicate insufficient randomness (i.e., a significant deviation from uniformity), the shuffle function should be re-examined or reshuffled with a new random seed.
+Importance: 10 out of 10
+
+Test 2: Dealing Cards
+Description: Verify that dealCards returns the correct number of cards and that the original deck decreases its length accordingly.
+Reason: To validate that cards are removed from the deck and added to the hand correctly.
+How to Check:
+   - Call dealCards with a known deck and numCards value.
+   - Check that hand.length === numCards and deck.length is reduced by numCards.
+   - Use assertions to compare expected and actual deck lengths.
+Importance: 9 out of 10
+
+Test 3: Game State Update on Playing a Card
+Description: Verify that when updateGameState is called with a played card, the game state (e.g., sequences or score) is updated correctly.
+Reason: To confirm that playing a card produces the expected changes in the game logic.
+How to Check:
+   - Set up a pre-defined game state.
+   - Call updateGameState with a sample card.
+   - Assert that the resulting state (e.g., updated score, changed sequence) matches the expected outcome.
+Importance: 9 out of 10
+
+Test 4: Fixit Move Application
+Description: Verify that applying a Fixit card via applyFixitMove correctly repairs a sequence or adjusts the game state.
+Reason: To ensure the special effect of a Fixit card is handled correctly and ends the turn.
+How to Check:
+   - Initialize a game state with a known incorrect sequence.
+   - Call applyFixitMove with a fixitCard and a target sequence.
+   - Assert that the target sequence is corrected as expected and game state reflects an ending of the action phase.
+Importance: 10 out of 10
+
+Test 5: Turn Phase Ending After Fixit Card Played
+Description: Verify that once a Fixit card is played (face down and then revealed), the action phase is immediately terminated.
+Reason: This is crucial for game balance, ensuring no further actions are allowed once a Fixit move is executed.
+How to Check:
+   - Simulate user input to play a Fixit card.
+   - Confirm that subsequent user actions in the same turn are ignored.
+   - Assert that the turn counter or phase state updates to indicate turn end.
+Importance: 10 out of 10
+
+Test 6: Game Over Conditions
+Description: Verify that the game ends when the defined game-over criteria are met (e.g., playDeck and hand are empty, or target condition reached).
+Reason: To ensure that the game terminates correctly under losing/winning conditions, preserving game integrity.
+How to Check:
+   - Set up a game state that meets the game-over condition.
+   - Call the game loop function and check that gameIsRunning becomes false.
+   - Use assertions to compare the expected end-of-game state.
+Importance: 9 out of 10
+
+Test 7: Persistence Mechanism
+Description: Verify that saving and loading the game state to/from localStorage works correctly.
+Reason: To allow the game to be resumed between sessions and to persist high scores.
+How to Check:
+   - Save a sample game state using JSON.stringify.
+   - Retrieve it using JSON.parse and compare all key values to the original.
+   - Assert correctness of data serialization and deserialization.
+Importance: 8 out of 10
+
+Test 8: Input Validation and Illegal Move Rejection
+Description: Verify that invalid user inputs (e.g., an attempt to play a card when no moves are legal) are handled gracefully.
+Reason: To enforce game rules and prevent state corruption, enhancing security and reliability.
+How to Check:
+   - Simulate illegal moves and check that the game state remains unchanged.
+   - Assert that an appropriate error message or feedback is produced.
+Importance: 7 out of 10
